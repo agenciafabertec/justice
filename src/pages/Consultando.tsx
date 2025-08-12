@@ -44,19 +44,22 @@ export default function Consultando() {
     fetchResultado();
   }, [cpf]);
 
+  // inicia a contagem apenas quando os dados chegarem; ao chegar em 0, redireciona
   useEffect(() => {
     if (!dados) return;
+    setTempoRestante(30);
     const timer = setInterval(() => {
       setTempoRestante((p) => {
         if (p <= 1) {
           clearInterval(timer);
+          navigate(`/processo?cpf=${dados.cpf}`);
           return 0;
         }
         return p - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [dados]);
+  }, [dados, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -65,8 +68,7 @@ export default function Consultando() {
           <>
             {/* logo */}
             <img
-           
-             src={logo}
+              src={logo}
               alt=""
               className="mb-6 h-20 w-30"
             />
@@ -89,8 +91,7 @@ export default function Consultando() {
             {/* topo com logo */}
             <div className="flex flex-col items-center">
               <img
-                
-                 src={logo}
+                src={logo}
                 alt=""
                 className="mb-4 h-16 w-25"
               />
@@ -128,13 +129,16 @@ export default function Consultando() {
                 {gerarNumeroProcesso(dados.cpf)}
               </p>
 
-              <div className="mt-5 flex justify-center">
+              <div className="mt-5 flex flex-col items-center gap-3">
                 <button
                   onClick={() => navigate(`/processo?cpf=${dados.cpf}`)}
                   className="rounded-lg bg-[#c01610] px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#a9130e] focus:outline-none focus:ring-2 focus:ring-red-400"
                 >
                   ACESSAR DETALHES DO PROCESSO
                 </button>
+                <p className="text-xs text-gray-500">
+                  Você será redirecionado automaticamente em {tempoRestante}s
+                </p>
               </div>
             </div>
 
